@@ -1,0 +1,106 @@
+import java_cup.runtime.*;
+import apicreatorxml.Writer;
+import apicreatorxml.Paso;
+import apicreatorxml.Node;
+import java.util.HashSet;
+
+action code
+{:
+Writer writer = new Writer("./gramatica.txt","./ascendent","cadena.txt",false);
+:}
+
+terminal String constint, mas, por, puntoComa;
+non terminal Por POR;
+non terminal PuntoComa PUNTOCOMA;
+non terminal Constint CONSTINT;
+non terminal Mas MAS;
+non terminal EXP1;
+non terminal Exp EXP;
+non terminal A A;
+non terminal B B;
+non terminal C C;
+
+
+EXP1 ::= EXP:exp {:
+    System.out.println(exp.getValue());
+
+    
+    writer.writeXML();
+:};
+
+EXP ::= B:b A:a PUNTOCOMA:puntocoma {:
+    Exp exp=new Exp();
+    exp.setValue(b.getValue()+a.getValue());
+    writer.addPasoNoTerminal("Exp", "null", exp, b, a, pc);    
+    RESULT=exp;
+    
+:};
+
+A ::= MAS:mas B:b A:a {:
+    A a=new A();
+    a.setValue(b.getValue()+a1.getValue());
+    writer.addPasoNoTerminal("A", "result", a, m, b, a1); 
+    RESULT=a;
+:}
+
+| {:
+    A a=new A();
+    a.setValue(0);
+    writer.addPasoLambda("A1", "result", a);
+    RESULT=a;
+:};
+
+B ::= NUM:num C:c {:
+    B b=new B();
+    b.setValue(num.getValue()*c.getValue());
+    writer.addPasoNoTerminal("B", "result", b, num, c); 
+    RESULT=b;
+:};
+NUM ::= constint:constint {:
+    Num num=new Num();
+    num.setValue(Integer.parseInt(number));
+    writer.addPasoTerminal("num", "vlex", num);
+    RESULT=num;
+:};
+C ::= POR:por NUM:num {:
+    C c=new C();
+    c.setValue(num.getValue()*c1.getValue());
+    writer.addPasoNoTerminal("C", "result", c, p, num, c1); 
+    RESULT=c;
+:}
+
+| {:
+    C c=new C();
+    c.setValue(1);
+    writer.addPasoLambda("C1", "result", c);
+    RESULT=c;
+:};
+
+POR ::= por {:
+    Por p=new Por();
+    p.setValue(por);
+    writer.addPasoTerminal(por, null, p);
+    RESULT=p;
+:};
+
+PUNTOCOMA ::= puntoComa {:
+    PuntoComa p=new PuntoComa();
+    p.setValue(puntoComa);
+    writer.addPasoTerminal(puntoComa, null, p);
+    RESULT=p;
+:};
+
+CONSTINT ::= constint {:
+    Constint c=new Constint();
+    c.setValue(constint);
+    writer.addPasoTerminal(constint, null, c);
+    RESULT=c;
+:};
+
+MAS ::= mas {:
+    Mas m=new Mas();
+    m.setValue(mas);
+    writer.addPasoTerminal(mas, null, m);
+    RESULT=m;
+:};
+

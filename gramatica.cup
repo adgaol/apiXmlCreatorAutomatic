@@ -1,0 +1,69 @@
+import java_cup.runtime.*;
+import apicreatorxml.Writer;
+import apicreatorxml.Paso;
+import apicreatorxml.Node;
+import java.util.HashSet;
+
+terminal String constint, mas, por, puntoComa;
+non terminal EXP1;
+non terminal Exp EXP;
+non terminal A A;
+non terminal B B;
+non terminal C C;
+
+
+EXP1 ::= EXP {:
+    System.out.println(exp.getValue());
+
+    
+    writer.writeXML();
+:};
+
+EXP ::= B A PUNTOCOMA {:
+    Exp exp=new Exp();
+    exp.setValue(b.getValue()+a.getValue());
+    writer.addPasoNoTerminal("Exp", "null", exp, b, a, pc);    
+    RESULT=exp;
+    
+:};
+
+A ::= MAS B A {:
+    A a=new A();
+    a.setValue(b.getValue()+a1.getValue());
+    writer.addPasoNoTerminal("A", "result", a, m, b, a1); 
+    RESULT=a;
+:}
+
+|{:
+    A a=new A();
+    a.setValue(0);
+    writer.addPasoLambda("A1", "result", a);
+    RESULT=a;
+:};
+
+B ::= NUM C {:
+    B b=new B();
+    b.setValue(num.getValue()*c.getValue());
+    writer.addPasoNoTerminal("B", "result", b, num, c); 
+    RESULT=b;
+:};
+NUM ::= constint {:
+    Num num=new Num();
+    num.setValue(Integer.parseInt(number));
+    writer.addPasoTerminal("num", "vlex", num);
+    RESULT=num;
+:};
+C ::= POR NUM C{:
+    C c=new C();
+    c.setValue(num.getValue()*c1.getValue());
+    writer.addPasoNoTerminal("C", "result", c, p, num, c1); 
+    RESULT=c;
+:}
+
+|{:
+    C c=new C();
+    c.setValue(1);
+    writer.addPasoLambda("C1", "result", c);
+    RESULT=c;
+:};
+
