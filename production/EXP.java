@@ -12,7 +12,7 @@ import vistdsapixmlcreator.Paso;
  */
 public class EXP {
 
-    private Integer value;
+    private String value;
     private Integer id;
     
     private Paso paso;
@@ -48,11 +48,11 @@ public class EXP {
         this.node = node;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
     

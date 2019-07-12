@@ -25,13 +25,16 @@ public class VisTDSApiXMLCreator {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+        String ruta=/*args[0];*/"gramatica.cup";
+        String cadena=/*args[1];*/"cadena.txt";
         try {
-            // TODO code application logic here
-//            File directorio = new File("./production");
-//            directorio.mkdir();
-            Annotator annotator=new Annotator("./gramatica.cup", "cadena.txt");
-            Runtime.getRuntime().exec("java -jar java-cup-11b.jar gramatica.cup");
+            if(ruta.split("\\.")[1].equals("cup")){
+                Annotator annotator=new Annotator(ruta, cadena);
+                Runtime.getRuntime().exec("java -jar java-cup-11b.jar gramatica.cup");
+            }
+            else{
+                Annotator annotator=new Annotator(ruta, cadena);
+            }
         } catch (IOException ex) {
             Logger.getLogger(VisTDSApiXMLCreator.class.getName()).log(Level.SEVERE, null, ex);
         }
