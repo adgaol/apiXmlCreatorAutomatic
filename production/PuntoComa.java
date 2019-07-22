@@ -8,16 +8,16 @@ import vistdsapixmlcreator.Paso;
 
 /**
  *
- * @author Adrián García Oller
+ * @author Adrian Garcia Oller
  */
-public class PuntoComa {
+public class Puntocoma {
 
     private String value;
     private Integer id;
     
     private Paso paso;
     private Node node;
-    public PuntoComa() {
+    public Puntocoma() {
     }
 
     

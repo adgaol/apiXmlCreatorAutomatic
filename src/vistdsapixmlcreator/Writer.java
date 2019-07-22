@@ -132,8 +132,8 @@ public class Writer {
      * @return
      * the added step
      */
-    public Node addPasoNoTerminal(String element, String atributo, String value, Object ... objects){
-        String regla=buildRule(objects);
+    public Node addPasoNoTerminal(String element, String atributo, String value, String rule, Object ... objects){
+        
         Node nodo=addNode(element, false,null);
         HashSet<Integer> relNodo=new HashSet<>();
         for(int i=1;i<objects.length;i++){
@@ -147,7 +147,7 @@ public class Writer {
             if(i==1){
                 Method getPaso=getMethod(clase, "getPaso");
                 Paso paso=getPaso(getPaso, objects[i]);
-                paso.setRegla(regla); 
+                paso.setRegla(rule); 
             }
         }
         Class claseAnt=getClass(objects[0]);
@@ -166,9 +166,10 @@ public class Writer {
         setPaso(claseAnt, objects[0], paso);
         return nodo;
     }
-    public Node addPasoNoTerminal(String element, String atributo, Integer value, Object ... objects){
-        return addPasoNoTerminal(element, atributo, value.toString(), objects);
+    public Node addPasoNoTerminal(String element, String atributo, Integer value, String rule, Object ... objects){
+        return addPasoNoTerminal(element, atributo, value.toString(), rule, objects);
     }
+    
     /**
      * add a terminal step
      * @param element
@@ -266,19 +267,15 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoLambdaDes(String element, String atributoHer, String atributoSint, String her, Object object, Boolean haveBrother, Node nodeAnt, Boolean itsRecursive){
+    public Node addPasoLambdaDes(String element, String atributoHer, String atributoSint, String her, Object object, Boolean haveBrother, Node nodeAnt){
         String regla=element+"::= λ";
         Node nodo=null;
         Paso paso=null;
         Class claseAnt=getClass(object);
-        if(itsRecursive){
-            nodo=addNode(element+"1", false, haveBrother);
-            paso=addPaso(false,null,element+"1", element+"1."+atributoHer+"="+her+" "+element+"1."+atributoSint+"=null", null, nodeAnt.getId());                        
-        }
-        else{
-            nodo=addNode(element, false, haveBrother);
-            paso=addPaso(false,null,element, element+"."+atributoHer+"="+her+" "+element+"."+atributoSint+"=null", null, nodeAnt.getId()); 
-        }
+
+        nodo=addNode(element, false, haveBrother);
+        paso=addPaso(false,null,element, element+"."+atributoHer+"="+her+" "+element+"."+atributoSint+"=null", null, nodeAnt.getId()); 
+
         nodo.setFatherNode(nodeAnt);
         Node nodoL=addNode("λ", true,false);
         nodoL.setFatherNode(nodo);
@@ -289,8 +286,8 @@ public class Writer {
         updatesValues(pasoL, nodoL, her);
         return nodo;
     }
-    public Node addPasoLambdaDes(String element, String atributoHer, String atributoSint, Integer her, Object object, Boolean haveBrother, Node nodeAnt, Boolean itsRecursive){
-        return addPasoLambdaDes(element, atributoHer, atributoSint, her.toString(), object, haveBrother, nodeAnt, itsRecursive);
+    public Node addPasoLambdaDes(String element, String atributoHer, String atributoSint, Integer her, Object object, Boolean haveBrother, Node nodeAnt){
+        return addPasoLambdaDes(element, atributoHer, atributoSint, her.toString(), object, haveBrother, nodeAnt);
     }
     /**
      * add a lambda step
@@ -350,7 +347,7 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoNoTerminalDes(String element, String atributoHer, String atributoSint, Object object, Boolean haveBrother, String her, Node nodeAnt, Boolean itsRecursive){
+    public Node addPasoNoTerminalDes(String element, String atributoHer, String atributoSint, Object object, Boolean haveBrother, String her, Node nodeAnt){
         Node nodo=null;
         Paso paso=null;
         Class claseAnt=getClass(object);
@@ -360,22 +357,15 @@ public class Writer {
         }
         else{
             
-            if(itsRecursive){
-                nodo=addNode(element+"1", false, haveBrother);
-                if(atributoHer==null){
-                    paso=addPaso(false,null,element+"1",element+"1."+atributoSint+"=null", null, nodeAnt.getId());     
-                }
-                else
-                    paso=addPaso(false,null,element+"1", element+"1."+atributoHer+"="+her+" "+element+"1."+atributoSint+"=null", null, nodeAnt.getId());                        
-            }
-            else{
+            
+            
                 nodo=addNode(element, false, haveBrother);
                if(atributoHer==null){
                     paso=addPaso(false,null,element,element+"."+atributoSint+"=null", null, nodeAnt.getId());     
                 }
                 else
                     paso=addPaso(false,null,element, element+"."+atributoHer+"="+her+" "+element+"."+atributoSint+"=null", null, nodeAnt.getId());                        
-            }
+            
         }
         nodo.setFatherNode(nodeAnt);
         setNode(claseAnt,object,nodo);
@@ -1302,5 +1292,17 @@ public class Writer {
         } catch (InvocationTargetException ex) {
             Logger.getLogger(Writer.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public void updateNoTerminals(String regla, String valor, Object antecedente, Object primerSimbolo){
+        Class clase=getClass(primerSimbolo);
+        Method getPaso=getMethod(clase, "getPaso");
+        Paso paso=getPaso(getPaso, primerSimbolo);
+        paso.setRegla(regla); 
+        Class claseAnt=getClass(antecedente);
+        setValue(claseAnt, antecedente, valor);
+        
+    }
+    public void updateNoTerminals(String regla, Integer valor, Object antecedente, Object primerSimbolo){
+        updateNoTerminals(regla, valor.toString(), antecedente, primerSimbolo);       
     }
 }

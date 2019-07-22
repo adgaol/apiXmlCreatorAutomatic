@@ -8,7 +8,7 @@ import vistdsapixmlcreator.Paso;
 
 /**
  *
- * @author Adrián García Oller
+ * @author Adrian Garcia Oller
  */
 public class Por {
 

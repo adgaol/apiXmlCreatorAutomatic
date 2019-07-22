@@ -1,0 +1,50 @@
+import java_cup.runtime.*;
+
+
+
+terminal String number;
+terminal mas, por, puntoComa;
+non terminal EXP1;
+non terminal Integer EXP;
+non terminal Integer A;
+non terminal Integer B;
+non terminal Integer C;
+
+
+EXP1 ::= EXP:exp {:
+    System.out.println(exp);    
+    writer.writeXML();
+:};
+
+EXP ::= B:b A:a puntoComa {:
+    
+    writer.addPasoNoTerminal("Exp", "null", b + a, exp, b, a, puntoComa);    
+    RESULT=b+a;
+  
+:};
+
+A ::= mas B:b A:a1 {:
+    writer.addPasoNoTerminal("A", "result", b + a1, a, mas, b, a1); 
+    RESULT=b+a1;
+:}
+
+|{:
+    
+    writer.addPasoLambda("A1", "result", 0, a);
+    RESULT=0;
+:};
+
+B ::= number:num C:c {:
+    writer.addPasoNoTerminal("B", "result", num * c, b, num, c); 
+    RESULT=Integer.parseInt(num)*c;
+:};
+
+C ::= por number:num C:c1{:
+    writer.addPasoNoTerminal("C", "result",num * c1, c, por, num, c1); 
+    RESULT=Integer.parseInt(num)*c1;
+:}
+
+|{:
+    writer.addPasoLambda("C1", "result", 1, c);
+    RESULT=1;
+:};

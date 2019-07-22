@@ -2,7 +2,8 @@ import java_cup.runtime.*;
 
 
 
-terminal String constint, mas, por, puntoComa;
+terminal String num;
+terminal mas, por, puntoComa;
 non terminal EXP1;
 non terminal Exp EXP;
 non terminal A A;
@@ -15,50 +16,39 @@ EXP1 ::= EXP {:
     writer.writeXML();
 :};
 
-EXP ::= B A PUNTOCOMA {:
+EXP ::= B A puntoComa {:
     Exp exp=new Exp();
-    exp.setValue(b.getValue()+a.getValue());
-    writer.addPasoNoTerminal("Exp", "null", exp, b, a, puntocoma);    
+    writer.addPasoNoTerminal("Exp", "null", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ;", exp, b, a, puntocoma);    
     RESULT=exp;
   
 :};
 
-A ::= MAS B A {:
+A ::= mas B A:a1 {:
     A a=new A();
-    a.setValue(b.getValue()+a1.getValue());
-    writer.addPasoNoTerminal("A", "result", a, mas, b, a1); 
+    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A", a, mas, b, a1); 
     RESULT=a;
 :}
 
 |{:
     A a=new A();
-    a.setValue(0);
-    writer.addPasoLambda("A1", "result", a);
+    writer.addPasoLambda("A1", "result", 0, a);
     RESULT=a;
 :};
 
-B ::= NUM C {:
+B ::= num C {:
     B b=new B();
-    b.setValue(num.getValue()*c.getValue());
-    writer.addPasoNoTerminal("B", "result", b, num, c); 
+    writer.addPasoNoTerminal("B", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c.getValue()), "B::= num C", b, num, c); 
     RESULT=b;
 :};
-NUM ::= constint {:
-    Num num=new Num();
-    num.setValue(Integer.parseInt(number));
-    writer.addPasoTerminal("num", "vlex", num);
-    RESULT=num;
-:};
-C ::= POR NUM C{:
+
+C ::= por num C:c1 {:
     C c=new C();
-    c.setValue(num.getValue()*c1.getValue());
-    writer.addPasoNoTerminal("C", "result", c, por, num, c1); 
+    writer.addPasoNoTerminal("C", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c1.getValue()), "C::= por num C1", c, por, num, c1); 
     RESULT=c;
 :}
 
 |{:
     C c=new C();
-    c.setValue(1);
-    writer.addPasoLambda("C1", "result", c);
+    writer.addPasoLambda("C1", "result", 1, c);
     RESULT=c;
 :};

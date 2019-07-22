@@ -8,16 +8,16 @@ import vistdsapixmlcreator.Paso;
 
 /**
  *
- * @author Adrián García Oller
+ * @author Adrian Garcia Oller
  */
-public class EXP1 {
+public class Number {
 
     private String value;
     private Integer id;
     
     private Paso paso;
     private Node node;
-    public EXP1() {
+    public Number() {
     }
 
     
