@@ -90,7 +90,7 @@ public class gramaticaParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-	    Writer writer = new Writer("./gramatica.txt","./descendent","cadena.txt",true);
+	    Writer writer = new Writer("gramatica.g4","./descendent","cadena.txt",true);
 
 	public gramaticaParser(TokenStream input) {
 		super(input);
@@ -133,7 +133,7 @@ public class gramaticaParser extends Parser {
 			{
 
 			        Exp expO=new Exp();
-			        Node node=writer.addPasoNoTerminalDes("EXP", expO, false, null, null, null, null);
+			        Node node=writer.addPasoNoTerminalDes("EXP", null, null, expO, false, null, null);
 			    
 			setState(17);
 			((ExpContext)_localctx).bO = b(node, true);
@@ -142,7 +142,7 @@ public class gramaticaParser extends Parser {
 			setState(19);
 			((ExpContext)_localctx).puntoComaO = puntoComa(node, false);
 
-			        writer.updateNoTerminals("EXP::= B A ;", ((ExpContext)_localctx).aO.aO.getValue(), expO, ((ExpContext)_localctx).bO.bO);
+			        writer.updateNoTerminals("EXP::= B {A.valor=B.result;} A ; {print(A.result);}", ((ExpContext)_localctx).aO.aO.getValue(), expO, ((ExpContext)_localctx).bO.bO);
 			        System.out.println(((ExpContext)_localctx).aO.aO.getValue());
 			        _localctx.expO=expO;   
 			        writer.writeXML();
@@ -163,6 +163,7 @@ public class gramaticaParser extends Parser {
 	public static class AContext extends ParserRuleContext {
 		public Node nodeAnt;
 		public Boolean haveBrother;
+		public Integer her;
 		public A aO;
 		public MasContext masO;
 		public BContext bO;
@@ -177,10 +178,11 @@ public class gramaticaParser extends Parser {
 			return getRuleContext(AContext.class,0);
 		}
 		public AContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public AContext(ParserRuleContext parent, int invokingState, Node nodeAnt, Boolean haveBrother) {
+		public AContext(ParserRuleContext parent, int invokingState, Node nodeAnt, Boolean haveBrother, Integer her) {
 			super(parent, invokingState);
 			this.nodeAnt = nodeAnt;
 			this.haveBrother = haveBrother;
+			this.her = her;
 		}
 		@Override public int getRuleIndex() { return RULE_a; }
 		@Override
@@ -193,8 +195,8 @@ public class gramaticaParser extends Parser {
 		}
 	}
 
-	public final AContext a(Node nodeAnt,Boolean haveBrother) throws RecognitionException {
-		AContext _localctx = new AContext(_ctx, getState(), nodeAnt, haveBrother);
+	public final AContext a(Node nodeAnt,Boolean haveBrother,Integer her) throws RecognitionException {
+		AContext _localctx = new AContext(_ctx, getState(), nodeAnt, haveBrother, her);
 		enterRule(_localctx, 2, RULE_a);
 		try {
 			setState(29);
@@ -205,7 +207,7 @@ public class gramaticaParser extends Parser {
 				{
 				 
 				        A aO=new A();
-				        Node node=writer.addPasoNoTerminalDes("A", aO, haveBrother, her.toString(), nodeAnt, "valor", "result");
+				        Node node=writer.addPasoNoTerminalDes("A", "valor", "result", aO, haveBrother, her.toString(), nodeAnt);
 				    
 				setState(23);
 				((AContext)_localctx).masO = mas(node, true);
@@ -214,7 +216,7 @@ public class gramaticaParser extends Parser {
 				setState(25);
 				((AContext)_localctx).aeO = a(node, false, Integer.parseInt(((AContext)_localctx).bO.bO.getValue())+her);
 				    
-				        writer.updateNoTerminals("A::= + B A1", ((AContext)_localctx).aeO.aO.getValue(), aO, ((AContext)_localctx).masO.m);
+				        writer.updateNoTerminals("A::= + B {A1.valor=A.valor+B.result;} A1 {A.result=A1.result;}", ((AContext)_localctx).aeO.aO.getValue(), aO, ((AContext)_localctx).masO.masO);
 				        _localctx.aO=aO;   
 				    
 				}
@@ -224,7 +226,7 @@ public class gramaticaParser extends Parser {
 				{
 
 				        A aO=new A();     
-				        writer.addPasoLambdaDes("A", "valor", "result", her.toString(), aO, haveBrother, nodeAnt);
+				        writer.addPasoLambdaDes("A", "valor", "result", her.toString(), "{A.result=A.valor;}", aO, haveBrother, nodeAnt);
 				        _localctx.aO=aO;
 				    
 				}
@@ -281,14 +283,14 @@ public class gramaticaParser extends Parser {
 			{
 
 			        B bO=new B();
-			        Node node=writer.addPasoNoTerminalDes("B", bO, haveBrother, null, nodeAnt, null, "result");
+			        Node node=writer.addPasoNoTerminalDes("B", null, "result", bO, haveBrother, null, nodeAnt);
 			    
 			setState(32);
 			((BContext)_localctx).numO = number(node, true);
 			setState(33);
-			((BContext)_localctx).cO = c(node, false, Integer.parseInt(((BContext)_localctx).numO.numO.getValue()));
+			((BContext)_localctx).cO = c(node, false, Integer.parseInt(((BContext)_localctx).numO.numberO.getValue()));
 
-			        writer.updateNoTerminals("B::= num C", ((BContext)_localctx).cO.cO.getValue(), bO, ((BContext)_localctx).numO.numO);    
+			        writer.updateNoTerminals("B::= num {C.valor=num.vlex;} C {B.result=C.result;}", ((BContext)_localctx).cO.cO.getValue(), bO, ((BContext)_localctx).numO.numberO);    
 			        _localctx.bO=bO;
 			    
 			}
@@ -308,7 +310,6 @@ public class gramaticaParser extends Parser {
 		public Node nodeAnt;
 		public Boolean haveBrother;
 		public Integer her;
-		public Boolean c1;
 		public C cO;
 		public PorContext porO;
 		public NumberContext numO;
@@ -323,12 +324,11 @@ public class gramaticaParser extends Parser {
 			return getRuleContext(CContext.class,0);
 		}
 		public CContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public CContext(ParserRuleContext parent, int invokingState, Node nodeAnt, Boolean haveBrother, Integer her, Boolean c1) {
+		public CContext(ParserRuleContext parent, int invokingState, Node nodeAnt, Boolean haveBrother, Integer her) {
 			super(parent, invokingState);
 			this.nodeAnt = nodeAnt;
 			this.haveBrother = haveBrother;
 			this.her = her;
-			this.c1 = c1;
 		}
 		@Override public int getRuleIndex() { return RULE_c; }
 		@Override
@@ -341,8 +341,8 @@ public class gramaticaParser extends Parser {
 		}
 	}
 
-	public final CContext c(Node nodeAnt,Boolean haveBrother,Integer her,Boolean c1) throws RecognitionException {
-		CContext _localctx = new CContext(_ctx, getState(), nodeAnt, haveBrother, her, c1);
+	public final CContext c(Node nodeAnt,Boolean haveBrother,Integer her) throws RecognitionException {
+		CContext _localctx = new CContext(_ctx, getState(), nodeAnt, haveBrother, her);
 		enterRule(_localctx, 6, RULE_c);
 		try {
 			setState(43);
@@ -353,16 +353,16 @@ public class gramaticaParser extends Parser {
 				{
 
 				        C cO=new C();
-				        Node node=writer.addPasoNoTerminalDes("C", cO, haveBrother, her.toString(), nodeAnt, "valor", "result");        
+				        Node node=writer.addPasoNoTerminalDes("C", "valor", "result", cO, haveBrother, her.toString(), nodeAnt);        
 				    
 				setState(37);
 				((CContext)_localctx).porO = por(node, true);
 				setState(38);
 				((CContext)_localctx).numO = number(node, true);
 				setState(39);
-				((CContext)_localctx).ceO = c(node, false, her*Integer.parseInt(((CContext)_localctx).numO.numO.getValue()));
+				((CContext)_localctx).ceO = c(node, false, her*Integer.parseInt(((CContext)_localctx).numO.numberO.getValue()));
 
-				        writer.updateNoTerminals("C::= * num C1", ((CContext)_localctx).ceO.cO.getValue(), cO, ((CContext)_localctx).porO.pr);
+				        writer.updateNoTerminals("C::= * num {C1.valor=C.valor*num.vlex;} C1 {C.result=C1.result;}", ((CContext)_localctx).ceO.cO.getValue(), cO, ((CContext)_localctx).porO.porO);
 				        _localctx.cO=cO;
 				}
 				break;
@@ -372,7 +372,7 @@ public class gramaticaParser extends Parser {
 				{
 
 				        C cO=new C();    
-				        writer.addPasoLambdaDes("C", "valor", "result", her.toString(), cO, haveBrother, nodeAnt);
+				        writer.addPasoLambdaDes("C", "valor", "result", her.toString(), "{C.result=C.valor;}", cO, haveBrother, nodeAnt);
 				        _localctx.cO=cO;
 				    
 				}
@@ -475,7 +475,7 @@ public class gramaticaParser extends Parser {
 
 			        
 			        Por porO=new Por();
-			        writer.addPasoTerminalDes("por", null, null, porO, haveBrother, nodeAnt);
+			        writer.addPasoTerminalDes(this._ctx.getText(), null, porO, haveBrother, nodeAnt);
 			        
 			        _localctx.porO=porO;
 			    
@@ -525,7 +525,7 @@ public class gramaticaParser extends Parser {
 
 			        
 			        Mas masO=new Mas();
-			        writer.addPasoTerminalDes("mas", null, null, masO, haveBrother, nodeAnt);
+			        writer.addPasoTerminalDes(this._ctx.getText(), null, masO, haveBrother, nodeAnt);
 			        
 			        _localctx.masO=masO;
 			    
@@ -575,7 +575,7 @@ public class gramaticaParser extends Parser {
 
 			        
 			        PuntoComa puntoComaO=new PuntoComa();
-			        writer.addPasoTerminalDes("puntoComa", null, null, puntoComaO, haveBrother, nodeAnt);
+			        writer.addPasoTerminalDes(this._ctx.getText(), null, puntoComaO, haveBrother, nodeAnt);
 			        
 			        _localctx.puntoComaO=puntoComaO;
 			    

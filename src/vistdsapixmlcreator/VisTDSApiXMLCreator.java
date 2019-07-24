@@ -29,7 +29,7 @@ public class VisTDSApiXMLCreator {
     public static void main(String[] args) {
         String ruta=args[0];/*"gramatica.g4";*/
         String cadena=args[1];/*"cadena.txt";*/
-        String destino=args[2];/*"./";*/
+        String destino=args[2];/*"./"*/;
         try {
             if(ruta.split("\\.")[1].equals("cup")){
                 Annotator annotator=new Annotator(ruta, cadena, destino);

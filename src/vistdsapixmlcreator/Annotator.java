@@ -64,7 +64,7 @@ public class Annotator {
 
                         bw.write("action code\n" +
                         "{:\n" +
-                        "Writer writer = new Writer(\"./gramatica.txt\",\"./ascendent\",\""+cadena+"\",false);\n" +
+                        "Writer writer = new Writer("+"\""+grammar+"\""+",\"./ascendent\",\""+cadena+"\",false);\n" +
                         ":}\n\n");
                         firtsTerminal=false;
                     }
@@ -262,14 +262,14 @@ public class Annotator {
                 
                 result+=terminal.toUpperCase()+" ::= "+terminal+":"+identifier+" {:\n" +
                 "    "+className+" "+terminal.substring(0,1)+"=new "+className+"();\n"+ 
-                "    writer.addPasoTerminal("+"\""+terminal+"\""+", null, "+identifier+", "+terminal.substring(0,1)+");\n" +
+                "    writer.addPasoTerminal("+"\""+terminal+"\""+", \"vlex\", "+identifier+", "+terminal.substring(0,1)+");\n" +
                 "    RESULT="+terminal.substring(0,1)+";\n" +
                 ":};\n\n";
             }
             else{
                 result+=terminal.toUpperCase()+" ::= "+terminal+":"+identifier+" {:\n" +
                 "    "+className+" "+terminal.substring(0,1)+"=new "+className+"();\n"+ 
-                "    writer.addPasoTerminal("+identifier+", null, "+terminal.substring(0,1)+");\n" +
+                "    writer.addPasoTerminal("+identifier+".toString()"+", null, "+terminal.substring(0,1)+");\n" +
                 "    RESULT="+terminal.substring(0,1)+";\n" +
                 ":};\n\n";
             }
@@ -294,8 +294,8 @@ public class Annotator {
             String line;
             terminalsWithValue=new HashSet<>();
             Boolean firstLine=true;
-            Boolean firtsTerminal=true;
             Boolean isFirstNoTerminal=true;
+            Boolean firstStep=true;
             Boolean beforeFirtsNoTerminal=true;
             Boolean haveHeader=false;
             Boolean terminalsBegins=false;
@@ -303,6 +303,7 @@ public class Annotator {
             Boolean insideNoTerminal=false;
             String antecedente="";
             Integer contCorch=0;
+            
             while ((line = br.readLine()) != null) {
                 String[] aux=line.split(" ");
                 
@@ -326,7 +327,7 @@ public class Annotator {
                         "    import vistdsapixmlcreator.Node;\n" +
                         "    import vistdsapixmlcreator.Paso;\n" +
                         "}\n"+"@members {\n" +
-                        "    Writer writer = new Writer(\"./gramatica.txt\",\"./descendent\",\""+cadena+"\",true);\n" +
+                        "    Writer writer = new Writer(\""+grammar+"\",\"./descendent\",\""+cadena+"\",true);\n" +
                         "}\n\n");
                         beforeFirtsNoTerminal=false;
                     }
@@ -339,7 +340,7 @@ public class Annotator {
                             "    : "+terminal+" {\n" +
                             "        \n" +
                             "        "+terminal+" "+noTerminal+"O=new "+terminal+"();\n" +
-                            "        writer.addPasoTerminalDes(\""+noTerminal+"\", \"vlex\", "+"Integer.parseInt(this._ctx.getText()), "+noTerminal+"O, haveBrother, nodeAnt);\n" +
+                            "        writer.addPasoTerminal(\""+noTerminal+"\", \"vlex\", "+"Integer.parseInt(this._ctx.getText()), "+noTerminal+"O, haveBrother, nodeAnt);\n" +
                             "        \n" +
                             "        _localctx."+noTerminal+"O="+noTerminal+"O;\n" +
                             "    }\n" +
@@ -350,7 +351,7 @@ public class Annotator {
                             "    : "+terminal+" {\n" +
                             "        \n" +
                             "        "+terminal+" "+noTerminal+"O=new "+terminal+"();\n" +
-                            "        writer.addPasoTerminalDes("+"this._ctx.getText()"+", null, "+noTerminal+"O, haveBrother, nodeAnt);\n" +
+                            "        writer.addPasoTerminal("+"this._ctx.getText()"+", null, "+noTerminal+"O, haveBrother, nodeAnt);\n" +
                             "        \n" +
                             "        _localctx."+noTerminal+"O="+noTerminal+"O;\n" +
                             "    }\n" +
@@ -373,6 +374,7 @@ public class Annotator {
                     }
                     if(line.contains(";")&&!insideAction){
                         insideNoTerminal=false;
+                        
                     }
                     if(!insideAction && insideNoTerminal && !line.contains("|")){
 
@@ -388,8 +390,22 @@ public class Annotator {
                         if(contCorch==0)
                             insideAction=false;
                     }
+                    if(line.contains("addPaso")){
+                        
+                        line=addNodeAnt(line, firstStep);//line.split("\\)")[0]+", nodeAnt)"+line.split("\\)")[1];
+                        firstStep=false;
+                    }
                     
-                    
+//                    if(line.contains("addPaso")){
+//                        if(line.contains("addPasoNoTerminal")){
+//                            String[] lineArg=line.split(",");
+//                            String rule=lineArg[3];
+//                            String action=tranformsAction(lineArg[2],lineArg[1]);
+//                            gramatica+=rule+"\n";
+//                            
+//                        }
+//                        
+//                    }
 //                    if(!line.equals("")&&line.substring(0,1).equals(" ")&&line.contains("[")){
 //                        String[] simbols=line.split(" ");
 //                        line=transformRule(simbols);
@@ -530,6 +546,28 @@ public class Annotator {
             }
         }
         return line;
+    }
+
+//    private String tranformsAction(String action, String atributte) {
+//        String newAction="";
+//        
+//        return newAction;
+//    }
+
+    private String addNodeAnt(String line, Boolean firstStep) {
+        String newLine="";
+        String[] paraLine=line.split(",");
+        for(int i=0;i<paraLine.length;i++){
+            if(i==paraLine.length-1){
+                if(firstStep)
+                    newLine+=paraLine[i].substring(0,paraLine[i].length()-2)+", null);";
+                else
+                    newLine+=paraLine[i].substring(0,paraLine[i].length()-2)+", nodeAnt);";
+            }
+            else
+                newLine+=paraLine[i]+", ";
+        }
+        return newLine;
     }
     
 }

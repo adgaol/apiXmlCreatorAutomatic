@@ -10,14 +10,14 @@ import vistdsapixmlcreator.Paso;
  *
  * @author Adrian Garcia Oller
  */
-public class Puntocoma {
+public class PuntoComa {
 
     private String value;
     private Integer id;
     
     private Paso paso;
     private Node node;
-    public Puntocoma() {
+    public PuntoComa() {
     }
 
     

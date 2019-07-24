@@ -83,7 +83,7 @@ public class gramaticaLexer extends Lexer {
 	}
 
 
-	    Writer writer = new Writer("./gramatica.txt","./descendent","cadena.txt",true);
+	    Writer writer = new Writer("gramatica.g4","./descendent","cadena.txt",true);
 
 
 	public gramaticaLexer(CharStream input) {

@@ -18,37 +18,37 @@ EXP1 ::= EXP {:
 
 EXP ::= B A puntoComa {:
     Exp exp=new Exp();
-    writer.addPasoNoTerminal("Exp", "null", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ;", exp, b, a, puntocoma);    
+    writer.addPasoNoTerminal("Exp", "null", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ; {print(A.result)}", exp, b, a, puntocoma);    
     RESULT=exp;
   
 :};
 
 A ::= mas B A:a1 {:
     A a=new A();
-    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A", a, mas, b, a1); 
+    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A {A.result=B.result+A1.result;}", a, mas, b, a1); 
     RESULT=a;
 :}
 
 |{:
     A a=new A();
-    writer.addPasoLambda("A1", "result", 0, a);
+    writer.addPasoLambda("A1", "result", 0, "{A.result=0;}", a);
     RESULT=a;
 :};
 
 B ::= num C {:
     B b=new B();
-    writer.addPasoNoTerminal("B", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c.getValue()), "B::= num C", b, num, c); 
+    writer.addPasoNoTerminal("B", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c.getValue()), "B::= num C {B.result=num.vlex*C.result;}", b, num, c); 
     RESULT=b;
 :};
 
 C ::= por num C:c1 {:
     C c=new C();
-    writer.addPasoNoTerminal("C", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c1.getValue()), "C::= por num C1", c, por, num, c1); 
+    writer.addPasoNoTerminal("C", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c1.getValue()), "C::= por num C1 {C.result=num.vlex*C1.result;}", c, por, num, c1); 
     RESULT=c;
 :}
 
 |{:
     C c=new C();
-    writer.addPasoLambda("C1", "result", 1, c);
+    writer.addPasoLambda("C1", "result", 1, "{C.result=1;}", c);
     RESULT=c;
 :};
