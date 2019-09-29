@@ -26,19 +26,21 @@ import java.util.logging.Logger;
  */
 public class Annotator {
     private HashSet<String> terminalsWithValue;
-
-    public Annotator(String grammar, String cadena, String destino) {
+    private String destino;
+    public Annotator(String grammar, String cadena, String destino, String nombreXML, String main) {
         File newFichero = new File(destino+"/production/");
-        
+        this.destino=destino;
         newFichero.mkdir();
         if(grammar.split("\\.")[1].equals("cup")){
-            writeCup(grammar, cadena, destino);
+            writeCup(grammar, cadena, destino, nombreXML, main);
         }
         else{
-            writeAntlr(grammar, cadena, destino);
+            writeAntlr(grammar, cadena, destino, nombreXML, main);
         }
     }
-    private void writeCup(String grammar, String cadena, String destino){
+    private void writeCup(String grammar, String cadena, String destino, String nombreXML, String main){
+        String nombreArchivoEntrada=main.split("/")[main.split("/").length-1];
+        String nombreArchivoMain=nombreArchivoEntrada.split("\\.")[0];
         String[] type=grammar.split("\\.");
         File newFichero = new File(destino+"/production/gramatica.cup");
         HashSet<String> terminals=new HashSet<>();
@@ -64,7 +66,7 @@ public class Annotator {
 
                         bw.write("action code\n" +
                         "{:\n" +
-                        "Writer writer = new Writer("+"\""+grammar+"\""+",\"./ascendent\",\""+cadena+"\",false);\n" +
+                        "Writer writer = new Writer("+"\""+grammar+"\""+",\"./"+nombreXML+"\","+nombreArchivoMain+".getChain()"+",false);\n" +
                         ":}\n\n");
                         firtsTerminal=false;
                     }
@@ -158,7 +160,7 @@ public class Annotator {
 
     private void createClass(String s) {
        
-        File newFichero = new File("./production/"+s+".java");
+        File newFichero = new File(destino+"/production/"+s+".java");
         try {
             newFichero.createNewFile();
         } catch (IOException ex) {
@@ -277,8 +279,9 @@ public class Annotator {
         return result;
     }
 
-    private void writeAntlr(String grammar, String cadena, String destino) {
-     
+    private void writeAntlr(String grammar, String cadena, String destino, String nombreXML, String main) {
+        String nombreArchivoEntrada=main.split("/")[main.split("/").length-1];
+        String nombreArchivoMain=nombreArchivoEntrada.split("\\.")[0];
         File newFichero = new File(destino+"/production/gramatica.g4");
         String terminals="";
         String noTerminals="";
@@ -327,7 +330,7 @@ public class Annotator {
                         "    import vistdsapixmlcreator.Node;\n" +
                         "    import vistdsapixmlcreator.Paso;\n" +
                         "}\n"+"@members {\n" +
-                        "    Writer writer = new Writer(\""+grammar+"\",\"./descendent\",\""+cadena+"\",true);\n" +
+                        "    Writer writer = new Writer(\""+grammar+"\",\"./"+nombreXML+"\","+nombreArchivoMain+".getChain()"+",true);\n" +
                         "}\n\n");
                         beforeFirtsNoTerminal=false;
                     }
@@ -396,46 +399,6 @@ public class Annotator {
                         firstStep=false;
                     }
                     
-//                    if(line.contains("addPaso")){
-//                        if(line.contains("addPasoNoTerminal")){
-//                            String[] lineArg=line.split(",");
-//                            String rule=lineArg[3];
-//                            String action=tranformsAction(lineArg[2],lineArg[1]);
-//                            gramatica+=rule+"\n";
-//                            
-//                        }
-//                        
-//                    }
-//                    if(!line.equals("")&&line.substring(0,1).equals(" ")&&line.contains("[")){
-//                        String[] simbols=line.split(" ");
-//                        line=transformRule(simbols);
-//                    }
-    //                if(line.split(" ").length>0 && line.split(" ")[0].equals("terminal") /*&&line.contains(",")*/){
-    //                    terminals.addAll(getTerminals(line));
-    //                }
-    //                if(line.split(" ").length>0 && line.split(" ")[0].equals("non") && firtsNonTerminal){
-    //                    String newNoTerminals=newNoTerminals(terminals);
-    //                    bw.write(newNoTerminals);
-    //                    firtsNonTerminal=false;
-    //                }
-    //                if(line.split(" ").length>0 && line.split(" ")[0].equals("non") /*&&line.contains(",")*/){
-    //                    String noTerminal=getNoTerminals(line);
-    //                    noTerminals.add(noTerminal);
-    //                    createClass(noTerminal);
-    //                }
-    //                if (line.contains("::=")){
-    //                    String[] symbols=line.split("::=")[1].split(" ");
-    //                    line=line.split("::=")[0]+"::="+addNameToSymbols(symbols);
-    //                }
-    //                if (line.contains("|")){
-    //                    String[] symbols=line.split("|")[1].split(" ");
-    //                    line="|"+addNameToSymbols(symbols);
-    //
-    //                }
-
-    //                    else if(line.split(" ").length>0 && line.split(" ")[0].equals("terminal")){
-    //                        terminals.add(line.substring(0,line.length()-1).split(" "))
-    //                    }
                 if(!terminalsBegins){
                     bw.write(line+"\n");
                 }
@@ -560,9 +523,9 @@ public class Annotator {
         for(int i=0;i<paraLine.length;i++){
             if(i==paraLine.length-1){
                 if(firstStep)
-                    newLine+=paraLine[i].substring(0,paraLine[i].length()-2)+", null);";
+                    newLine+=paraLine[i].substring(0,paraLine[i].length()-2)+", null, false);";
                 else
-                    newLine+=paraLine[i].substring(0,paraLine[i].length()-2)+", nodeAnt);";
+                    newLine+=paraLine[i].substring(0,paraLine[i].length()-2)+", nodeAnt, haveBrother);";
             }
             else
                 newLine+=paraLine[i]+", ";

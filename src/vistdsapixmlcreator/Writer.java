@@ -153,7 +153,6 @@ public class Writer {
             }
         }
         Class claseAnt=getClass(objects[0]);
-        Method getValue=getMethod(claseAnt, "getValue");
         //String value=getValue(getValue,objects[0]);
         Paso paso=null;
         if(!atributo.equals("null"))
@@ -178,6 +177,8 @@ public class Writer {
      * element of the step
      * @param atributo
      * name of the attribute of the step
+     * @param value
+     * value of the step
      * @param object
      * no terminal related with this step
      * @return
@@ -186,7 +187,6 @@ public class Writer {
     public Node addPasoTerminal(String element, String atributo, String value, Object object){
        Node nodo=addNode(element, true, null);
        Class claseAnt=getClass(object);
-       Method getValue=getMethod(claseAnt, "getValue");
        //String value=getValue(getValue, object);
        Paso paso=null;
        if(atributo!=null)
@@ -242,9 +242,7 @@ public class Writer {
         nodoL.setFatherNode(nodo);
 
         Class claseAnt=getClass(object);
-        //Method getValue=getMethod(claseAnt, "getValue");
-        //String value=getValue(getValue,object);
-        setValue(claseAnt, object, value);
+        
         Paso paso=addPaso(true,null,"λ",null,regla);
         paso=addPaso(false,null,element, element+"."+atributo+"="+value, null,paso.getId());                        
         Method setId=getMethodSetId(claseAnt, "setId");
@@ -271,7 +269,7 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoLambda(String element, String atributoHer, String atributoSint, String her, String action, Object object, Boolean haveBrother, Node nodeAnt){
+    public Node addPasoLambda(String element, String atributoHer, String atributoSint, String her, String action, Object object, Node nodeAnt, Boolean haveBrother){
         String regla=element+"::= λ";
         
         
@@ -292,8 +290,8 @@ public class Writer {
         updatesValues(pasoL, nodoL, her);
         return nodo;
     }
-    public Node addPasoLambda(String element, String atributoHer, String atributoSint, Integer her, String action, Object object, Boolean haveBrother, Node nodeAnt){
-        return addPasoLambda(element, atributoHer, atributoSint, her.toString(), action, object, haveBrother, nodeAnt);
+    public Node addPasoLambda(String element, String atributoHer, String atributoSint, Integer her, String action, Object object, Node nodeAnt, Boolean haveBrother){
+        return addPasoLambda(element, atributoHer, atributoSint, her.toString(), action, object, nodeAnt, haveBrother);
     }
     /**
      * add a lambda step
@@ -308,6 +306,7 @@ public class Writer {
      * @return
      * the added step
     **/
+    
     public Node addPasoTerminal(String element, String atributo, String value, Object object, Boolean haveBrother, Node nodeAnt){
         Class claseAnt=getClass(object);
         
@@ -340,6 +339,9 @@ public class Writer {
         setPaso(claseAnt, object, paso);
         return node;
     }
+    public Node addPasoNoTerminal(String element, String atributoHer, String atributoSint, Object object, Integer her, Node nodeAnt, Boolean haveBrother){
+        return addPasoNoTerminal(element, atributoHer, atributoSint, object, her.toString(), nodeAnt, haveBrother);
+    }
      /**
      * add a lambda step
      * @param element
@@ -353,7 +355,7 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoNoTerminal(String element, String atributoHer, String atributoSint, Object object, Boolean haveBrother, String her, Node nodeAnt){
+    public Node addPasoNoTerminal(String element, String atributoHer, String atributoSint, Object object, String her, Node nodeAnt, Boolean haveBrother){
         
         
         Node nodo=null;
@@ -364,11 +366,11 @@ public class Writer {
             paso=addPasoPrimero(element, null, null);
         }
         else{
-            
+                
             
             
                 nodo=addNode(element, false, haveBrother);
-               if(atributoHer==null){
+                if(atributoHer==null){
                     paso=addPaso(false,null,element,element+"."+atributoSint+"=null", null, nodeAnt.getId());     
                 }
                 else
