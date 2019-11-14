@@ -1,0 +1,93 @@
+import java_cup.runtime.*;
+import vistdsapixmlcreator.Writer;
+import vistdsapixmlcreator.Paso;
+import vistdsapixmlcreator.Node;
+
+
+
+
+action code
+{:
+Writer writer = new Writer("gramaticaCUPV0basica.cup","./gramaticaCUPV0basicaXML",Main.getChain(),false);
+:}
+
+terminal String number;
+terminal mas, por, puntoComa;
+non terminal Number NUMBER;
+non terminal Por POR;
+non terminal PuntoComa PUNTOCOMA;
+non terminal Mas MAS;
+non terminal EXP1;
+non terminal Exp EXP;
+non terminal A A;
+non terminal B B;
+non terminal C C;
+
+
+EXP1 ::= EXP:exp {:
+	Exp1  exp1 =new Exp1 ();
+    System.out.println(exp);
+    writer.writeXML();
+:};
+
+EXP ::= B:b A:a PUNTOCOMA:puntocoma {:
+	Exp  exp =new Exp ();
+    writer.addPasoNoTerminal("EXP", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ; {Exp.result=B.result+A.result;}", exp , b, a, puntocoma);
+    RESULT=exp ;
+  
+:};
+
+A ::= MAS:mas B:b A:a1 {:
+	A  a =new A ();
+    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A ; {A.result=B.result+A1.result;}", a , mas, b, a1);
+    RESULT=a ;
+:}
+
+| {:
+	A  a =new A ();
+    
+    writer.addPasoLambda("A", "result", 0, " {A.result=0;}", a );
+    RESULT=a ;
+:};
+
+B ::= NUMBER:numid C:c {:
+	B  b =new B ();
+    writer.addPasoNoTerminal("B", "result", Integer.parseInt(c.getValue())*Integer.parseInt(numid.getValue()), "B::= num C {B.result=num.vlex*C.result;}", b , numid, c);
+    RESULT=b ;
+:};
+
+C ::= POR:por NUMBER:numid C:c1 {:
+	C  c =new C ();
+   writer.addPasoNoTerminal("C", "result", Integer.parseInt(c1.getValue())*Integer.parseInt(numid.getValue()), "C::= por num C1 {C.result=num.vlex*C1.result;}", c , por, numid, c1);
+   RESULT=c ;
+:}
+
+| {:
+	C  c =new C ();
+    writer.addPasoLambda("C", "result", 1, " {C.result=1;}", c );
+    RESULT=c ;
+:};
+NUMBER ::= number:numberid {:
+    Number n=new Number();
+    writer.addPasoTerminal("number", "vlex", numberid, n);
+    RESULT=n;
+:};
+
+POR ::= por:porid {:
+    Por p=new Por();
+    writer.addPasoTerminal(porid.toString(), null, p);
+    RESULT=p;
+:};
+
+PUNTOCOMA ::= puntoComa:puntoComaid {:
+    PuntoComa p=new PuntoComa();
+    writer.addPasoTerminal(puntoComaid.toString(), null, p);
+    RESULT=p;
+:};
+
+MAS ::= mas:masid {:
+    Mas m=new Mas();
+    writer.addPasoTerminal(masid.toString(), null, m);
+    RESULT=m;
+:};
+

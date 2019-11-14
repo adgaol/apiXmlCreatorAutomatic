@@ -1,0 +1,55 @@
+import java_cup.runtime.*;
+
+
+
+
+terminal String num;
+terminal mas, por, puntoComa;
+non terminal EXP1;
+non terminal Exp EXP;
+non terminal A A;
+non terminal B B;
+non terminal C C;
+
+
+EXP1 ::= EXP {:
+    System.out.println(exp.getValue()); 
+    writer.writeXML();
+:};
+
+EXP ::= B A puntoComa {:
+    
+    writer.addPasoNoTerminal("Exp", "null", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ; {print(A.result)}");
+    RESULT=exp;
+  
+:};
+
+A ::= mas B A:a1 {:
+    
+    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A {A.result=B.result+A1.result;}");
+    RESULT=a;
+:}
+
+|{:
+    
+    writer.addPasoLambda("A", "result", 0, "{A.result=0;}");
+    RESULT=a;
+:};
+
+B ::= num C {:
+    
+    writer.addPasoNoTerminal("B", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c.getValue()), "B::= num C {B.result=num.vlex*C.result;}");
+    RESULT=b;
+:};
+
+C ::= por num C:c1 {:
+   
+    writer.addPasoNoTerminal("C", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c1.getValue()), "C::= por num C1 {C.result=num.vlex*C1.result;}");
+    RESULT=c;
+:}
+
+|{:
+    
+    writer.addPasoLambda("C", "result", 1, "{C.result=1;}");
+    RESULT=c;
+:};

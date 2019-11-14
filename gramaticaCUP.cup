@@ -1,0 +1,65 @@
+import java_cup.runtime.*;
+
+terminal String num;
+terminal mas, por, menos, div, parAbierto, parCerrado;
+non terminal EXP;
+non terminal E E;
+non terminal T T;
+non terminal F F;
+
+EXP ::= E {:
+    System.out.println(e.getValue());    
+    writer.writeXML();
+:};
+
+E ::= E:e1 mas T {:
+    E e=new E();
+    writer.addPasoNoTerminal("E", "valor", Integer.parseInt(e1.getValue())+Integer.parseInt(t.getValue()), "E::= E1 + T {E.valor=E1.valor+T.valor;}", e, e1, mas, t);    
+    RESULT=e;
+  
+:}
+| E:e1 menos T {:
+    E e=new E();
+    writer.addPasoNoTerminal("E", "valor", Integer.parseInt(e1.getValue())-Integer.parseInt(t.getValue()), "| E1 - T {E.valor=E1.valor-T.valor;}", e, e1, menos, t);    
+    RESULT=e;
+  
+:}
+| T {:
+    E e=new E();
+    writer.addPasoNoTerminal("E", "valor", t.getValue(), "| T {E.valor=T.valor;}", e, t);    
+    RESULT=e;
+  
+:}
+;
+T ::= T:t1 por F {:
+    T t=new T();
+    writer.addPasoNoTerminal("T", "valor", Integer.parseInt(t1.getValue())*Integer.parseInt(f.getValue()), "T::= T1 + F {T.valor=T1.valor*F.valor;}", t, t1, por, f);    
+    RESULT=t;
+  
+:}
+| T:t1 div F {:
+    T t=new T();
+    writer.addPasoNoTerminal("T", "valor", Integer.parseInt(t1.getValue())/Integer.parseInt(f.getValue()), "| T1 / F {T.valor=T1.valor/F.valor;}", t, t1, div, f);    
+    RESULT=t;
+  
+:}
+| f {:
+    T t=new T();
+    writer.addPasoNoTerminal("T", "valor", t.getValue(), "| F {T.valor=F.valor;}", t, f);    
+    RESULT=t;
+  
+:}
+;
+F::= num {:
+    F f=new F();
+    writer.addPasoNoTerminal("F", "valor", num.getValue(), "| num {F.valor=num.vlex;}", f, num);    
+    RESULT=t;
+  
+:}
+| parAbierto E parCerrado {:
+    F f=new F();
+    writer.addPasoNoTerminal("F", "valor", e.getValue(), "| ( E ) {F.valor=E.valor;}", f, parAbierto, e, parCerrado);    
+    RESULT=f;
+  
+:}
+;

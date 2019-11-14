@@ -134,8 +134,9 @@ public class Writer {
      * @return
      * the added step
      */
-    public Node addPasoNoTerminal(String element, String atributo, String value, String rule, Object ... objects){
+    public Node addPasoNoTerminal(String element, String atributo, Object value, String rule, Object ... objects){
         //rule=processRule(rule, element);
+        
         Node nodo=addNode(element, false,null);
         HashSet<Integer> relNodo=new HashSet<>();
         for(int i=1;i<objects.length;i++){
@@ -161,15 +162,15 @@ public class Writer {
             paso=addPaso(false,null,element, null, null,relNodo);
         
         Method setId=getMethodSetId(claseAnt, "setId");
-        setValue(claseAnt, objects[0], value);
+        setValue(claseAnt, objects[0], value.toString());
         setId(setId,objects[0], paso.getId());
         setNode(claseAnt,objects[0],nodo);
         setPaso(claseAnt, objects[0], paso);
         return nodo;
     }
-    public Node addPasoNoTerminal(String element, String atributo, Integer value, String rule, Object ... objects){
-        return addPasoNoTerminal(element, atributo, value.toString(), rule, objects);
-    }
+//    public Node addPasoNoTerminal(String element, String atributo, Integer value, String rule, Object ... objects){
+//        return addPasoNoTerminal(element, atributo, value.toString(), rule, objects);
+//    }
     
     /**
      * add a terminal step
@@ -184,7 +185,7 @@ public class Writer {
      * @return
      * the added step
      */
-    public Node addPasoTerminal(String element, String atributo, String value, Object object){
+    public Node addPasoTerminal(String element, String atributo, Object value, Object object){
        Node nodo=addNode(element, true, null);
        Class claseAnt=getClass(object);
        //String value=getValue(getValue, object);
@@ -198,12 +199,12 @@ public class Writer {
        setId(setId,object, paso.getId());
        setNode(claseAnt, object, nodo);
        setPaso(claseAnt, object, paso);
-       setValue(claseAnt, object, value);
+       setValue(claseAnt, object, value.toString());
        return nodo;
     }
-    public Node addPasoTerminal(String element, String atributo, Integer value, Object object){
-        return addPasoTerminal(element, atributo, value.toString(), object);
-    }
+//    public Node addPasoTerminal(String element, String atributo, Integer value, Object object){
+//        return addPasoTerminal(element, atributo, value.toString(), object);
+//    }
     public Node addPasoTerminal(String element, String atributo, Object object){
        Node nodo=addNode(element, true, null);
        Class claseAnt=getClass(object);
@@ -230,7 +231,7 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoLambda(String element, String atributo, String value, String action, Object object){
+    public Node addPasoLambda(String element, String atributo, Object value, String action, Object object){
         
         
         String regla=element+"::= λ";
@@ -246,15 +247,15 @@ public class Writer {
         Paso paso=addPaso(true,null,"λ",null,regla);
         paso=addPaso(false,null,element, element+"."+atributo+"="+value, null,paso.getId());                        
         Method setId=getMethodSetId(claseAnt, "setId");
-        setValue(claseAnt, object, value);
+        setValue(claseAnt, object, value.toString());
         setId(setId,object, paso.getId());
         setNode(claseAnt,object,nodo);
         setPaso(claseAnt, object, paso);
         return nodo;
     }
-    public Node addPasoLambda(String element, String atributo, Integer value, String action, Object object){
-        return addPasoLambda(element, atributo, value.toString(), action, object);
-    }
+//    public Node addPasoLambda(String element, String atributo, Integer value, String action, Object object){
+//        return addPasoLambda(element, atributo, value.toString(), action, object);
+//    }
     /**
      * add a lambda step
      * @param element
@@ -269,9 +270,10 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoLambda(String element, String atributoHer, String atributoSint, String her, String action, Object object, Node nodeAnt, Boolean haveBrother){
+    public Node addPasoLambda(String element, String atributoHer, String atributoSint, Object her, String action, Object object, Node nodeAnt, Boolean haveBrother){
         String regla=element+"::= λ";
-        
+        if(nodeAnt!=null&&nodeAnt.getElement().equals(element))
+            element=element+"1";
         
         Node nodo=null;
         Paso paso=null;
@@ -286,13 +288,13 @@ public class Writer {
         Paso pasoL=addPaso(true, null, "λ", null, regla, paso.getId());
         setNode(claseAnt,object,nodo);
         setPaso(claseAnt, object, paso);
-        setValue(claseAnt, object, her);
-        updatesValues(pasoL, nodoL, her);
+        setValue(claseAnt, object, her.toString());
+        updatesValues(pasoL, nodoL, her.toString());
         return nodo;
     }
-    public Node addPasoLambda(String element, String atributoHer, String atributoSint, Integer her, String action, Object object, Node nodeAnt, Boolean haveBrother){
-        return addPasoLambda(element, atributoHer, atributoSint, her.toString(), action, object, nodeAnt, haveBrother);
-    }
+//    public Node addPasoLambda(String element, String atributoHer, String atributoSint, Integer her, String action, Object object, Node nodeAnt, Boolean haveBrother){
+//        return addPasoLambda(element, atributoHer, atributoSint, her.toString(), action, object, nodeAnt, haveBrother);
+//    }
     /**
      * add a lambda step
      * @param element
@@ -339,9 +341,7 @@ public class Writer {
         setPaso(claseAnt, object, paso);
         return node;
     }
-    public Node addPasoNoTerminal(String element, String atributoHer, String atributoSint, Object object, Integer her, Node nodeAnt, Boolean haveBrother){
-        return addPasoNoTerminal(element, atributoHer, atributoSint, object, her.toString(), nodeAnt, haveBrother);
-    }
+    
      /**
      * add a lambda step
      * @param element
@@ -355,9 +355,10 @@ public class Writer {
      * @return
      * the added step
     **/
-    public Node addPasoNoTerminal(String element, String atributoHer, String atributoSint, Object object, String her, Node nodeAnt, Boolean haveBrother){
+    public Node addPasoNoTerminal(String element, String atributoHer, String atributoSint, Object her, Object object, Node nodeAnt, Boolean haveBrother){
         
-        
+        if(nodeAnt!=null&&nodeAnt.getElement().equals(element))
+            element=element+"1";
         Node nodo=null;
         Paso paso=null;
         Class claseAnt=getClass(object);
@@ -366,16 +367,14 @@ public class Writer {
             paso=addPasoPrimero(element, null, null);
         }
         else{
-                
             
-            
-                nodo=addNode(element, false, haveBrother);
-                if(atributoHer==null){
-                    paso=addPaso(false,null,element,element+"."+atributoSint+"=null", null, nodeAnt.getId());     
-                }
-                else
-                    paso=addPaso(false,null,element, element+"."+atributoHer+"="+her+" "+element+"."+atributoSint+"=null", null, nodeAnt.getId());                        
-            
+            nodo=addNode(element, false, haveBrother);
+            if(atributoHer==null){
+                paso=addPaso(false,null,element,element+"."+atributoSint+"=null", null, nodeAnt.getId());     
+            }
+            else
+                paso=addPaso(false,null,element, element+"."+atributoHer+"="+her+" "+element+"."+atributoSint+"=null", null, nodeAnt.getId());                        
+
         }
         nodo.setFatherNode(nodeAnt);
         setNode(claseAnt,object,nodo);
@@ -655,7 +654,7 @@ public class Writer {
             Attr attrAccion = doc.createAttribute("pos");
             attrAccion.setValue(pos.toString());
             actionXml.setAttributeNode(attrAccion);
-            actionXml.setTextContent(action.substring(1,action.length()-1));
+            actionXml.setTextContent(action.substring(0,action.length()));
             if(pos<removeActions(production).split(" ").length){
                 Element intermedio=doc.createElement("intermedio");
                 actionXml.appendChild(intermedio);
@@ -993,22 +992,27 @@ public class Writer {
      */
     public void updatesValues(Paso paso,Node node, String value){
         Node nodeAux=node.getFatherNode();
-        while (!nodeAux.getHaveBrother()){
+        while (nodeAux.getFatherNode()!=null&&!nodeAux.getHaveBrother()){
+            paso.getChangedNodes().add(nodeAux.getId());
+            Paso pasoAux =getStep(nodeAux.getId());
+            String values=pasoAux.getValor();
+            if(values==null){
+                values=value;
+            }
+            else
+                values=values.replace("null",value );
+            paso.getChanges().add(values); 
+            
+            nodeAux=nodeAux.getFatherNode();
+        }
+        if(nodeAux.getFatherNode()!=null){
             paso.getChangedNodes().add(nodeAux.getId());
             Paso pasoAux =getStep(nodeAux.getId());
             String values=pasoAux.getValor();
 
             values=values.replace("null",value );
             paso.getChanges().add(values); 
-            nodeAux=nodeAux.getFatherNode();
-        }
-        paso.getChangedNodes().add(nodeAux.getId());
-        Paso pasoAux =getStep(nodeAux.getId());
-        String values=pasoAux.getValor();
-
-        values=values.replace("null",value );
-        paso.getChanges().add(values); 
-            
+        }    
         
     }
     /**
@@ -1277,7 +1281,7 @@ public class Writer {
             Logger.getLogger(Writer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void updateNoTerminals(String regla, String valor, Object antecedente, Object primerSimbolo){
+    public void updateNoTerminals(String regla, Object valor, Object primerSimbolo, Object antecedente){
         
         Class clase=getClass(primerSimbolo);
         Method getPaso=getMethod(clase, "getPaso");
@@ -1285,12 +1289,12 @@ public class Writer {
         //regla=processRule(regla, paso.getElemento());
         paso.setRegla(removeOnlyActions(regla)); 
         Class claseAnt=getClass(antecedente);
-        setValue(claseAnt, antecedente, valor);
+        setValue(claseAnt, antecedente, valor.toString());
         
     }
-    public void updateNoTerminals(String regla, Integer valor, Object antecedente, Object primerSimbolo){
-        updateNoTerminals(regla, valor.toString(), antecedente, primerSimbolo);       
-    }
+//    public void updateNoTerminals(String regla, Integer valor, Object antecedente, Object primerSimbolo){
+//        updateNoTerminals(regla, valor.toString(), antecedente, primerSimbolo);       
+//    }
 
     private String processRule(String rule, String element) {
         String newRule="";
@@ -1322,10 +1326,18 @@ public class Writer {
                 if(line.contains("addPasoLambda")){
                     String parameters=line.split("\\(")[1];
                     antecedent=parameters.split(",")[0].substring(1,parameters.split(",")[0].length()-1);
-                    if(traductorType.equals("Ascendente"))
+                    if(traductorType.equals("Ascendente")){
                         rule=antecedent+"::= λ "+line.split(",")[3].substring(2,line.split(",")[3].length()-1);
-                    else
+                        if(rule.contains("\")")){
+                            rule=rule.replace("\")", "");
+                        }
+                    }
+                    else{
                         rule=antecedent+"::= λ "+line.split(",")[4].substring(2,line.split(",")[4].length()-1);
+                        if(rule.contains("\")")){
+                            rule=rule.replace("\")", "");
+                        }
+                    }
                     if(!antecedentes.contains(antecedent))
                         antecedentes.add(antecedent);
                     ArrayList<String> rules;
@@ -1342,6 +1354,9 @@ public class Writer {
                     String parameters=line.split("\\(")[1];
                     
                     rule=line.split(",")[3].substring(2,line.split(",")[3].length()-1);
+                    if(rule.contains("\")")){
+                        rule=rule.replace("\")", "");
+                    }
                     antecedent=parameters.split(",")[0].substring(1,parameters.split(",")[0].length()-1);
                     if(!antecedentes.contains(antecedent))
                         antecedentes.add(antecedent);
@@ -1360,7 +1375,10 @@ public class Writer {
                     //String parameters=aux.split("\\(")[1];
                     
                     rule=aux;
-                    antecedent=aux.split("::=")[0];
+                    if(aux.split("::=").length>1)
+                        antecedent=aux.split("::=")[0];
+                    else
+                        antecedent=antecedentes.get(antecedentes.size()-1);
                     if(!antecedentes.contains(antecedent))
                         antecedentes.add(antecedent);
                     ArrayList<String> rules;

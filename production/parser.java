@@ -43,17 +43,17 @@ public class parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\023\000\004\004\006\001\002\000\010\005\ufffa\006" +
-    "\021\007\ufffa\001\002\000\004\002\020\001\002\000\010" +
-    "\005\ufff7\006\ufff7\007\ufff7\001\002\000\004\002\001\001" +
+    "\000\023\000\004\004\007\001\002\000\004\002\025\001" +
+    "\002\000\010\005\ufffa\006\020\007\ufffa\001\002\000\004" +
+    "\002\001\001\002\000\010\005\ufff9\006\ufff9\007\ufff9\001" +
     "\002\000\006\005\013\007\ufffd\001\002\000\004\007\016" +
-    "\001\002\000\004\004\006\001\002\000\004\004\ufff6\001" +
+    "\001\002\000\004\004\007\001\002\000\004\004\ufff6\001" +
     "\002\000\006\005\013\007\ufffd\001\002\000\004\007\ufffe" +
-    "\001\002\000\004\002\ufff8\001\002\000\004\002\uffff\001" +
-    "\002\000\004\002\000\001\002\000\004\004\ufff9\001\002" +
-    "\000\004\004\006\001\002\000\006\005\ufffc\007\ufffc\001" +
-    "\002\000\010\005\ufffa\006\021\007\ufffa\001\002\000\006" +
-    "\005\ufffb\007\ufffb\001\002" });
+    "\001\002\000\004\002\ufff7\001\002\000\004\002\uffff\001" +
+    "\002\000\004\004\ufff8\001\002\000\004\004\007\001\002" +
+    "\000\006\005\ufffc\007\ufffc\001\002\000\010\005\ufffa\006" +
+    "\020\007\ufffa\001\002\000\006\005\ufffb\007\ufffb\001\002" +
+    "\000\004\002\000\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -61,14 +61,14 @@ public class parser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\023\000\012\004\003\006\004\007\006\011\007\001" +
-    "\001\000\006\002\021\012\022\001\001\000\002\001\001" +
+    "\000\023\000\012\002\004\006\003\007\005\011\007\001" +
+    "\001\000\002\001\001\000\006\003\020\012\021\001\001" +
     "\000\002\001\001\000\002\001\001\000\006\005\011\010" +
-    "\010\001\001\000\004\003\016\001\001\000\006\004\003" +
+    "\010\001\001\000\004\004\016\001\001\000\006\002\004" +
     "\011\013\001\001\000\002\001\001\000\006\005\011\010" +
     "\014\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001\000\002\001\001\000\002\001\001\000\004\004" +
-    "\023\001\001\000\002\001\001\000\006\002\021\012\024" +
+    "\001\001\000\002\001\001\000\004\002\022\001\001\000" +
+    "\002\001\001\000\006\003\020\012\023\001\001\000\002" +
     "\001\001\000\002\001\001" });
 
   /** Access to <code>reduce_goto</code> table. */
@@ -107,21 +107,12 @@ public class parser extends java_cup.runtime.lr_parser {
   public int error_sym() {return 1;}
 
 
-
-    Private String chain;
-	/* this part is included in the parser class */
-	public parser(java_cup.runtime.Scanner s) {
-        super(s);
-        this.chain=chain;
-    }
-
-
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
 class CUP$parser$actions {
 
 
-Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChain(),false);
+Writer writer = new Writer("gramaticaCUPV0basica.cup","./gramaticaCUPV0basicaXML",Main.getChain(),false);
 
   private final parser parser;
 
@@ -152,7 +143,8 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
 		int expright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Exp exp = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    System.out.println(exp.getValue());    
+	Exp1  exp1 =new Exp1 ();
+    System.out.println(exp);
     writer.writeXML();
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXP1",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -187,9 +179,9 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
 		int puntocomaright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		PuntoComa puntocoma = (PuntoComa)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    Exp exp=new Exp();
-    writer.addPasoNoTerminal("Exp", "null", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ; {print(A.result)}", exp, b, a, puntocoma);    
-    RESULT=exp;
+	Exp  exp =new Exp ();
+    writer.addPasoNoTerminal("EXP", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a.getValue()), "EXP::= B A ; {Exp.result=B.result+A.result;}", exp , b, a, puntocoma);
+    RESULT=exp ;
   
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXP",5, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -210,9 +202,9 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
 		int a1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		A a1 = (A)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    A a=new A();
-    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A {A.result=B.result+A1.result;}", a, mas, b, a1); 
-    RESULT=a;
+	A  a =new A ();
+    writer.addPasoNoTerminal("A", "result", Integer.parseInt(b.getValue())+Integer.parseInt(a1.getValue()), "A::= + B A ; {A.result=B.result+A1.result;}", a , mas, b, a1);
+    RESULT=a ;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("A",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -223,50 +215,51 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
             {
               A RESULT =null;
 		
-    A a=new A();
-    writer.addPasoLambda("A", "result", 0, "{A.result=0;}", a);
-    RESULT=a;
+	A  a =new A ();
+    
+    writer.addPasoLambda("A", "result", 0, " {A.result=0;}", a );
+    RESULT=a ;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("A",6, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // B ::= NUM C 
+          case 5: // B ::= NUMBER C 
             {
               B RESULT =null;
-		int numleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int numright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Num num = (Num)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int numidleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int numidright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Number numid = (Number)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int cleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		C c = (C)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    B b=new B();
-    writer.addPasoNoTerminal("B", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c.getValue()), "B::= num C {B.result=num.vlex*C.result;}", b, num, c); 
-    RESULT=b;
+	B  b =new B ();
+    writer.addPasoNoTerminal("B", "result", Integer.parseInt(c.getValue())*Integer.parseInt(numid.getValue()), "B::= num C {B.result=num.vlex*C.result;}", b , numid, c);
+    RESULT=b ;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("B",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // C ::= POR NUM C 
+          case 6: // C ::= POR NUMBER C 
             {
               C RESULT =null;
 		int porleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int porright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Por por = (Por)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int numleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int numright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Num num = (Num)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int numidleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int numidright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Number numid = (Number)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int c1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int c1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		C c1 = (C)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    C c=new C();
-    writer.addPasoNoTerminal("C", "result", Integer.parseInt(num.getValue())*Integer.parseInt(c1.getValue()), "C::= por num C1 {C.result=num.vlex*C1.result;}", c, por, num, c1); 
-    RESULT=c;
+	C  c =new C ();
+   writer.addPasoNoTerminal("C", "result", Integer.parseInt(c1.getValue())*Integer.parseInt(numid.getValue()), "C::= por num C1 {C.result=num.vlex*C1.result;}", c , por, numid, c1);
+   RESULT=c ;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("C",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -277,16 +270,32 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
             {
               C RESULT =null;
 		
-    C c=new C();
-    writer.addPasoLambda("C", "result", 1, "{C.result=1;}", c);
-    RESULT=c;
+	C  c =new C ();
+    writer.addPasoLambda("C", "result", 1, " {C.result=1;}", c );
+    RESULT=c ;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("C",8, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 8: // POR ::= por 
+          case 8: // NUMBER ::= number 
+            {
+              Number RESULT =null;
+		int numberidleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int numberidright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String numberid = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+    Number n=new Number();
+    writer.addPasoTerminal("number", "vlex", numberid, n);
+    RESULT=n;
+
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("NUMBER",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 9: // POR ::= por 
             {
               Por RESULT =null;
 		int poridleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
@@ -297,12 +306,12 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
     writer.addPasoTerminal(porid.toString(), null, p);
     RESULT=p;
 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("POR",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("POR",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 9: // PUNTOCOMA ::= puntoComa 
+          case 10: // PUNTOCOMA ::= puntoComa 
             {
               PuntoComa RESULT =null;
 		int puntoComaidleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
@@ -313,23 +322,7 @@ Writer writer = new Writer("gramatica.cup","./gramaticaXML",EjemploANTLR.getChai
     writer.addPasoTerminal(puntoComaid.toString(), null, p);
     RESULT=p;
 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("PUNTOCOMA",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 10: // NUM ::= num 
-            {
-              Num RESULT =null;
-		int numidleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int numidright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String numid = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		
-    Num n=new Num();
-    writer.addPasoTerminal("num", "vlex", numid, n);
-    RESULT=n;
-
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("NUM",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("PUNTOCOMA",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 

@@ -1,11 +1,11 @@
 grammar gramatica;
  
 
-exp  returns [Exp expO] 
+exp returns [Exp expO] 
     :
     {
         Exp expO=new Exp();
-        Node node=writer.addPasoNoTerminal("EXP", null, null, expO, null);
+        Node node=writer.addPasoNoTerminal("EXP", null, null, expO, "null");
     } 
 
     bO=b aO=a[Integer.parseInt(((ExpContext)_localctx).bO.bO.getValue())] PuntoComa 
@@ -16,14 +16,14 @@ exp  returns [Exp expO]
         writer.writeXML();
     }
     ;
-a [Integer her]  returns [A aO]
+a [Integer her] returns [A aO]
     :
     { 
         A aO=new A();
         Node node=writer.addPasoNoTerminal("A", "valor", "result", aO, her);
-    /*que la api apunte sola haveBrother, el toString del valor que lo haga la funcion*/
+    
     }
-    Mas bO=b  aeO=a[Integer.parseInt(((AContext)_localctx).bO.bO.getValue())+her] 
+    Mas bO=b  aeO=a[Integer.parseInt(((AContext)_localctx).bO.bO.getValue()) + her] 
     {    
         writer.updateNoTerminals("A::= + B {A1.valor=A.valor+B.result;} A {A.result=A1.result;}", ((AContext)_localctx).aeO.aO.getValue(), aO, ((AContext)_localctx).masO.masO);
         _localctx.aO=aO;   
@@ -36,11 +36,11 @@ a [Integer her]  returns [A aO]
         _localctx.aO=aO;
     }
     ;
-b  returns [B bO]
+b returns [B bO]
     :
     {
         B bO=new B();
-        Node node=writer.addPasoNoTerminal("B", null, "result", bO, null);
+        Node node=writer.addPasoNoTerminal("B", null, "result", bO, "null");
     } 
     numO=Number cO=c[Integer.parseInt(((BContext)_localctx).numO.numberO.getValue())] 
     {
@@ -49,7 +49,7 @@ b  returns [B bO]
     }
     ;
 
-c [Integer her]   returns [C cO]
+c [Integer her] returns [C cO]
     :
     {
         C cO=new C();
@@ -58,7 +58,8 @@ c [Integer her]   returns [C cO]
     Por numO=Number  ceO=c[her*Integer.parseInt(((CContext)_localctx).numO.numberO.getValue())] 
     {
         writer.updateNoTerminals("C::= * number {C1.valor=C.valor*number.vlex;} C {C.result=C1.result;}", ((CContext)_localctx).ceO.cO.getValue(), cO, ((CContext)_localctx).porO.porO);
-        _localctx.cO=cO;} 
+        _localctx.cO=cO;
+    } 
     |
     {
         C cO=new C();    
